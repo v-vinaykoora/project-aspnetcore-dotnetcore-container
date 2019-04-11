@@ -7,8 +7,8 @@ RUN dotnet restore
 
 # Copy everything else and build
 COPY . ./
+EXPOSE 8123
 RUN dotnet publish -c Release -o out
-
 # Build runtime image
 FROM microsoft/aspnetcore:1.1
 WORKDIR /app
