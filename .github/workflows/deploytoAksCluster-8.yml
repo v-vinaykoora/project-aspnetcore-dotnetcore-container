@@ -1,0 +1,50 @@
+on: [push]
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    
+    - uses: azure/docker-login@v1
+      with:
+        login-server: aaaatiwarishubregistry.azurecr.io
+        username: ${{ secrets.acr_aaaatiwarishubregistry_username }}
+        password: ${{ secrets.acr_aaaatiwarishubregistry_password }}
+    
+    - name: Build and push image to ACR
+      id: build-image
+      run: |
+        docker build "$GITHUB_WORKSPACE/aspnet-core-dotnet-core" -f  "aspnet-core-dotnet-core/Dockerfile" -t aaaatiwarishubregistry.azurecr.io/akstest:${{ github.sha }} --label dockerfile-path=aspnet-core-dotnet-core/Dockerfile
+        docker push aaaatiwarishubregistry.azurecr.io/akstest:${{ github.sha }}
+    
+    - uses: azure/k8s-set-context@v1
+      with:
+         kubeconfig: ${{ secrets.aks_akstest_kubeConfig }}
+      id: login
+    
+    - name: Create namespace
+      run: |
+        namespacePresent=`kubectl get namespace | grep akstest8e4c | wc -l`
+        if [ $namespacePresent -eq 0 ]
+        then
+            echo `kubectl create namespace akstest8e4c`
+        fi
+
+    - uses: azure/k8s-create-secret@v1
+      with:
+        namespace: akstest8e4c
+        container-registry-url: aaaatiwarishubregistry.azurecr.io
+        container-registry-username: ${{ secrets.acr_aaaatiwarishubregistry_username }}
+        container-registry-password: ${{ secrets.acr_aaaatiwarishubregistry_password }}
+        secret-name: akstestdockerauth
+       
+    - uses: azure/k8s-deploy@v1.2
+      with:
+        namespace: akstest8e4c
+        manifests: |
+          manifests/deployment-9.yml
+          manifests/service-9.yml
+        images: |
+          aaaatiwarishubregistry.azurecr.io/akstest:${{ github.sha }}
+        imagepullsecrets: |
+          akstestdockerauth
