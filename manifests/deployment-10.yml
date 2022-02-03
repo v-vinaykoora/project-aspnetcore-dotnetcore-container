@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: "kubernete-c772"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: "kubernete-c772"
+  template:
+    metadata:
+      labels:
+        app: "kubernete-c772"
+    spec:
+      containers:
+        - name: "kubernete-c772"
+          image: "aaaatiwarishubregistry.azurecr.io/kubernete"
+          ports:
+          - containerPort: 8123
