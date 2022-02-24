@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: "kubernete-a7b5"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: "kubernete-a7b5"
+  template:
+    metadata:
+      labels:
+        app: "kubernete-a7b5"
+    spec:
+      containers:
+        - name: "kubernete-a7b5"
+          image: "aadapptestacr.azurecr.io/kubernete"
+          ports:
+          - containerPort: 8123
