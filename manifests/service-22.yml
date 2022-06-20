@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: "kubernete-c9cb"
+    labels:
+        app: "kubernete-c9cb"
+spec:
+    type: LoadBalancer
+    ports:
+    - port: 8123
+      targetPort: 8123
+      protocol: TCP
+      name: http
+    selector:
+        app: "kubernete-c9cb"
