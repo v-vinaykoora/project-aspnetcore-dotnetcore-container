@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: "petestaks-dfa3"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: "petestaks-dfa3"
+  template:
+    metadata:
+      labels:
+        app: "petestaks-dfa3"
+    spec:
+      containers:
+        - name: "petestaks-dfa3"
+          image: "aadapptestacr.azurecr.io/petestaks"
+          ports:
+          - containerPort: 8123
