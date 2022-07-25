@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: "petestaks-7e60"
+    labels:
+        app: "petestaks-7e60"
+spec:
+    type: LoadBalancer
+    ports:
+    - port: 8123
+      targetPort: 8123
+      protocol: TCP
+      name: http
+    selector:
+        app: "petestaks-7e60"
